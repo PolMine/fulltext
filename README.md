@@ -1,2 +1,10 @@
-# fulltext
-Experimental R package with infastructure for fulltext display
+
+[![Travis-CI Build
+Status](https://api.travis-ci.org/PolMine/fulltext.svg?branch=master)](https://travis-ci.org/PolMine/annolite)
+[![codecov](https://codecov.io/gh/PolMine/fulltext/branch/master/graph/badge.svg)](https://codecov.io/gh/PolMine/annolite/branch/master)
+
+## Purpose
+
+The purpose of the ´fulltext´-package is to offer a htmlwidget to
+reconstruct a formatted fulltext output from input data of tokenized
+text.

@@ -1,0 +1,25 @@
+Package: fulltext
+Type: Package
+Title: Toolset to generate fulltext display from corpus data
+Version: 0.0.0.9001
+Date: 2020-01-24
+Authors@R: person("Andreas", "Blaette", role = c("aut", "cre"), email = "andreas.blaette@uni-due.de")
+Description: The package includes an htmlwidget 'fulltext' and corresponding auxiliary functions.
+Imports:
+    htmlwidgets,
+    polmineR,
+    RcppCWB,
+    methods,
+    crosstalk
+Suggests:
+    knitr,
+    janeaustenr,
+    tokenizers
+VignetteBuilder: knitr
+LazyData: yes
+License: GPL-3
+Encoding: UTF-8
+Collate:
+    'fulltext.R'
+    'as.fulltexttable.R'
+RoxygenNote: 6.1.1
