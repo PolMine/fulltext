@@ -10,11 +10,38 @@ vignette: >
 
 ---
 
-
 ## Purpose
 
 The purpose of the ´annolite´-package is to offer a htmlwidget to reconstruct a formatted fulltext output from input data of tokenized text. To provide the basis for an annotation tool that can detect the corpus positions of annotations, each token is supplemented with (invisible) additional information, such as corpus positions.
 
+```{r, eval = FALSE}
+library(polmineR)
+library(annolite)
+library(crosstalk)
+use("polmineR")
+
+b <- corpus("GERMAPARLMINI") %>%
+  subset(date == "2009-11-10") %>%
+  as.speeches(s_attribute_name = "speaker")
+
+df_list <- lapply(
+  seq_len(length(b)),
+  function(i) data.frame(
+    as.fulltexttable(b[[i]], headline = name(b[[i]]), name = name(b[[i]])),
+    subcorpus_id = name(b[[i]]))
+  )
+df <- do.call(rbind, df_list)
+
+sd <- crosstalk::SharedData$new(df, ~subcorpus_id, group = "fulltext")
+
+bscols(
+  widths = c(4, NA),
+  list(
+    filter_select(id = "subcorpus", label = "Subcorpus", sd, ~subcorpus_id, multiple = FALSE)
+  ),
+  fulltext(sd, width = "100%", box = FALSE)
+)
+```
 
 ## Getting Started
 
