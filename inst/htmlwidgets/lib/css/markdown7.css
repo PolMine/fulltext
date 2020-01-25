@@ -116,13 +116,14 @@ dl dd > :last-child {
 margin-bottom: 0; }
 blockquote {
 border-left: 4px solid #dddddd;
+font-size: 14px;
 padding: 0 15px;
 color: #777777; }
 blockquote > :first-child {
 margin-top: 0; }
 blockquote > :last-child {
 margin-bottom: 0; }
-table {
+/* table {
 padding: 0;border-collapse: collapse; }
 table tr {
 border-top: 1px solid #cccccc;
@@ -144,6 +145,7 @@ table tr th :first-child, table tr td :first-child {
 margin-top: 0; }
 table tr th :last-child, table tr td :last-child {
 margin-bottom: 0; }
+*/
 img {
 max-width: 100%; }
 span.frame {
@@ -248,7 +250,7 @@ line-height: 0;
 }
 @media screen and (min-width: 914px) {
 body {
-width: 854px;
+/*width: 854px;*/
 margin:0 auto;
 }
 }
