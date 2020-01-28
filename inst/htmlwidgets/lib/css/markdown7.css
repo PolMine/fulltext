@@ -4,7 +4,7 @@ font-size: 14px;
 line-height: 1.6;
 padding-top: 10px;
 padding-bottom: 10px;
-background-color: white;
+/* background-color: white; */
 padding: 30px; }
 body > *:first-child {
 margin-top: 0 !important; }
@@ -61,7 +61,12 @@ h6 {
 color: #777777;
 font-size: 14px; }
 p, blockquote, ul, ol, dl, li, table, pre {
-margin: 15px 0; }
+margin: 15px 0;
+}
+para {
+margin: 15px 0;
+font-size: 14px !important;
+}
 hr {
 border: 0 none;
 color: #cccccc;
@@ -116,12 +121,15 @@ dl dd > :last-child {
 margin-bottom: 0; }
 blockquote {
 border-left: 4px solid #dddddd;
-font-size: 14px;
+font-size: 14px !important;
 padding: 0 15px;
 color: #777777; }
 blockquote > :first-child {
-margin-top: 0; }
+font-size: 14px !important;
+margin-top: 0;
+}
 blockquote > :last-child {
+font-size: 14px !important;
 margin-bottom: 0; }
 /* table {
 padding: 0;border-collapse: collapse; }

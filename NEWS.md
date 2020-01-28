@@ -1,3 +1,12 @@
+fulltext 0.0.0.9002
+===================
+
+* Introduced a new standard generic `as.fulltexttable`. The function `as.fulltexttable` is now the
+  method `as.fulltexttable` for the virtual class `slice` from the polmineR package.
+* The method `as.fulltexttable` has a new argument `display` to indicate whether the text should be visible ("none") or not ("block").
+* Introduced a new tag para in the css to avoid that css for p overrides ioslides layout.
+* commented out background color white.
+
 fulltext 0.0.0.9001
 ===================
 

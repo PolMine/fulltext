@@ -1,23 +1,29 @@
 #' Convert object to input for fulltext (table format).
 #' 
 #' @param x The object to be converted.
+#' @export as.fulltexttable
+#' @rdname as.fulltexttable
+setGeneric("as.fulltexttable", function(x, ...) standardGeneric("as.fulltexttable"))
+
+
+
 #' @param headline A headline to prepend.
 #' @param name An id inserted into tags.
-#' @export as.fulltexttable
-#' @importFrom methods is
 #' @examples
 #' library(polmineR)
 #' library(fulltext)
 #' use("polmineR")
-#' P <- partition("GERMAPARLMINI", speaker = "Volker Kauder", date = "2009-11-10")
-#' D <- as.fulltexttable(P, headline = "Volker Kauder (CDU)")
-#' fulltext(D)
+#' p <- partition("GERMAPARLMINI", speaker = "Volker Kauder", date = "2009-11-10")
+#' ftab <- as.fulltexttable(p, headline = "Volker Kauder (CDU)", display = "block")
+#' fulltext(ftab, box = FALSE)
 #' 
-#' sd <- crosstalk::SharedData$new(D)
+#' sd <- crosstalk::SharedData$new(ftab)
 #' fulltext::fulltext(sd)
 #' @importFrom polmineR get_token_stream as.utf8
 #' @importFrom RcppCWB cl_struc2str cl_cpos2struc
-as.fulltexttable <- function(x, headline = NULL, name = ""){
+#' @importFrom methods is
+#' @importClassesFrom polmineR slice subcorpus partition
+setMethod("as.fulltexttable", "slice", function(x, display = c("none", "block"), headline = NULL, name = ""){
   if (!"slice" %in% is(x))stop("The function is implemented only for partition/subcorpus objects.")
   paragraphs <- lapply(
     seq_len(nrow(x@cpos)),
@@ -36,10 +42,10 @@ as.fulltexttable <- function(x, headline = NULL, name = ""){
       
       s_attr <- RcppCWB::cl_struc2str(RcppCWB::cl_cpos2struc(x@cpos[i,1], corpus = x@corpus, s_attribute = "interjection"), corpus = x@corpus, s_attribute ="interjection")
       if (s_attr %in% c("speech", "FALSE")){
-        df[1,"tag_before"] <- paste(df[1,"tag_before"], sprintf("<p style='display:none' name='%s'>", name), sep = "")
-        df[nrow(df), "tag_after"] <- paste(df[nrow(df), "tag_after"], "</p>", sep = "")
+        df[1,"tag_before"] <- paste(df[1,"tag_before"], sprintf("<para style='display:%s' name='%s'>", display, name), sep = "")
+        df[nrow(df), "tag_after"] <- paste(df[nrow(df), "tag_after"], "</para>", sep = "")
       } else {
-        df[1,"tag_before"] <- paste(df[1,"tag_before"], sprintf("<blockquote style='display:none' name ='%s'>", name), sep = "")
+        df[1,"tag_before"] <- paste(df[1,"tag_before"], sprintf("<blockquote style='display:%s' name ='%s'>", display, name), sep = "")
         df[nrow(df), "tag_after"] <- paste(df[nrow(df), "tag_after"], "</blockquote>", sep = "")
       }
       df
@@ -49,10 +55,10 @@ as.fulltexttable <- function(x, headline = NULL, name = ""){
   
   if (!is.null(headline)){
     headline_df <- data.frame(id = "", token = headline, tag_before = "", tag_after = "", stringsAsFactors = FALSE)
-    headline_df[1, "tag_before"] <- sprintf("<h2 style='display:none' name='%s'>", name) 
+    headline_df[1, "tag_before"] <- sprintf("<h2 style='display:%s' name='%s'>", display, name) 
     headline_df[nrow(headline_df), "tag_after"] <- "</h2>"
     y <- rbind(headline_df, y)
   }
   y
-}
+})
 
