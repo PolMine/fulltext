@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>R Markdown and ioslides</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'R Markdown and ioslides',
+                        subtitle: 'How to embed fulltext htmlwidgets',
+                useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Andreas Blaette' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <link href="slides_files/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="slides_files/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="slides_files/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="slides_files/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="slides_files/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="slides_files/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="slides_files/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="slides_files/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="slides_files/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="slides_files/ioslides-13.5.1/js/slide-deck.js"></script>
+  <script src="slides_files/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+  <script src="slides_files/pymjs-1.3.2/pym.v1.js"></script>
+  <script src="slides_files/widgetframe-binding-0.3.1/widgetframe.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+/* https://github.com/ropensci/plotly/pull/524#issuecomment-468142578 */
+slide:not(.current) .plotly.html-widget{
+  display: block;
+}
+
+  </style>
+
+
+</head>
+
+<body style="opacity: 0">
+
+<slides>
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+          </hgroup>
+  </slide>
+
+<slide class=""><hgroup><h2>About these slides</h2></hgroup><article  id="about-these-slides" class="smaller">
+
+<ul>
+<li><p>The htmlwidget included in the fulltext package is designed to be used</p>
+
+<ul>
+<li>in an interactive R sessions as output in the Viewer pane of RStudio;</li>
+<li>to be included in Shiny apps;</li>
+<li>or to be included in Rmarkdown documents, including the communication between htmlwidgets using the crosstalk R package.</li>
+</ul></li>
+<li><p>Including fulltext widgets in html slide presentations (ioslides) generated from Rmarkdown documents is a relevant scenario: Being able to show the fulltext behind different kinds of quantitative analyses (cooccurrences, keywords, topicmodelling) has a genuine value …</p>
+
+<ul>
+<li>to qualitatively validate quantiative results (documentation function of slides)</li>
+<li>to explain the intuition behind using quantiative approaches to text, either in the context of presenting research results, or offering a tutorial (explanatory function of slides)</li>
+</ul></li>
+<li><p>Including &lsquo;fulltext&rsquo; widgets in an ioslides presentation is feasible and yields results fully in line with the aforementioned aims. But there is a set of technical caveats and considerations. These slides explain how to do it.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Slide with R Output</h2></hgroup><article  id="slide-with-r-output" class="smaller">
+
+<ul>
+<li>To get started, we load the fulltext package that includes the fulltext htmlwidget, and the polmineR package to access corpus data.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>library(fulltext)
+library(polmineR)</pre>
+
+<ul>
+<li>We generate a subcorpus with a speech given by Volker Kauder in a session of the Bundestag on November 10, 2009, turn it into the table format required by the fulltext htmlwidget (<code>as.fulltextdata()</code>), and generate the widget calling the <code>fulltext()</code> function.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>ftxt &lt;- corpus(&quot;GERMAPARLMINI&quot;) %&gt;%
+  subset(speaker == &quot;Volker Kauder&quot;) %&gt;%
+  subset(date == &quot;2009-11-10&quot;) %&gt;%
+  as.fulltexttable(headline = &quot;Volker Kauder (CDU)&quot;, display = &quot;block&quot;) %&gt;%
+  fulltext(box = TRUE)</pre>
+
+<ul>
+<li>Note that the argument <code>display</code> has the value &ldquo;block&rdquo; here: This means that the text will be visible from the outset (which would not be the case if the value was &ldquo;none&rdquo;.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Fulltext Output in Slides</h2></hgroup><article  id="fulltext-output-in-slides" class="smaller">
+
+<ul>
+<li><p>Including the htmlwidget <code>ftxt</code> in an document erssentially requires nothing more than to put the <code>ftxt</code> object at the end of a code block, however …</p></li>
+<li><p>The CSS of the fulltext widget may conflict with the CSS of the document where it is embedded in. Modifying the CSS of the widget until all interferences have ceased is possible. But this is not fully reliable. The best practice for the time being is to wrap the fulltext widget into a so-called &ldquo;widgetframe&rdquo; as offered by the - surprise - widgetframe package. The widgetframe ensures that the the htmlwidget within it is complete and sealed off against the wrapping document. Apart from loading the widgetframe package, it is necessary to define a directory where the widgetframe will keep its files. (The respective snippet is reported here. But typically, you would set chunk options invisibly before the actual document starts.)</p></li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>library(widgetframe)
+knitr::opts_chunk$set(widgetframe_widgetsdir = &#39;widgets&#39;)</pre>
+
+<ul>
+<li>Now we create the widgetframe from the fulltext-htmlwidget we had prepared before. See the result on the next page/slide.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>frameWidget(ftxt)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Slide with a fulltext widget</h2></hgroup><article  id="slide-with-a-fulltext-widget">
+
+<div id="htmlwidget-b2e746d70aee461d6a9b" style="width:100%;height:432px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b2e746d70aee461d6a9b">{"x":{"url":"slides_files/figure-html//widgets/widget_unnamed-chunk-4.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+
+</article></slide><slide class=""><hgroup><h2>Fulltext likes compancy</h2></hgroup><article  id="fulltext-likes-compancy" class="smaller">
+
+<ul>
+<li><p>For explanatory purposes, the ability to show different documents relevant for an analysis without having to leave the presentation is very attractive. The fulltext htmlwidget is designed to be compatible with the crosstalk package, which offers the JavaScript functionality to support the communication of different htmlwidgets, and this is a prerequisite for this functionality.</p></li>
+<li><p>To learn how to create crosstalk-enabled html including a fulltext widget and further widgets in an interactive R/RStudio session, see the standard vignette of this package.</p></li>
+<li><p>To embed a fulltext htmlwidget in an ioslides presentation, conflicts with the surrounding document need to be contained. But for the crosstalk scenario, is not possible to use the widgetframe that is appropriate when you have just one simple fulltext widget: The <code>shiny.tag</code> class that is used as a wrapper for several htmlwidgets is not an htmlwidget itself and the <code>frameWidget()</code> function will not accept it as an input.</p></li>
+<li><p>The best solution at this time is to generate the <code>shiny.tag</code> object that includes htmlwidgets communicating with each other via crosstalk, to turn it into a plain html file that is saved to disk and included in the slides with an iframe tag.</p></li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Scenario &amp; Code, Part I</h2></hgroup><article  id="scenario-code-part-i" class="smaller">
+
+<ul>
+<li><p>In this scenario, we want to have a slide with a table with different sucorpora to be displayed in fulltext mode at the left and the fulltext output in the right column of the slide.</p></li>
+<li><p>To prepare some data, we generate a bundle of subcorpora of speeches given in the German Bundestag …</p></li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>speeches &lt;- corpus(&quot;GERMAPARLMINI&quot;) %&gt;%
+  subset(date == &quot;2009-11-10&quot;) %&gt;%
+  as.speeches(s_attribute_name = &quot;speaker&quot;, verbose = FALSE, progress = FALSE)
+speeches &lt;- speeches[[subset(summary(speeches), size &gt;= 50)$name]]</pre>
+
+<ul>
+<li>We turn the subcorpora into <code>fulltexttable</code> objects and glue the tables together. Note that chunks of text are not displayed initially (display = &ldquo;none&rdquo;).</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>df_list &lt;- lapply(seq_len(length(speeches)),
+  function(i) data.frame(
+    as.fulltexttable(speeches[[i]], headline = unname(name(speeches[[i]])), display = &quot;none&quot;, name = name(name(speeches[[i]]))),
+    subcorpus_id = unname(name(speeches[[i]])))
+  )
+df &lt;- do.call(rbind, df_list)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Scenario &amp; Code, Part II</h2></hgroup><article  id="scenario-code-part-ii" class="smaller">
+
+<ul>
+<li>Now we take care that we have two tables that are able to communicate with each other. The technical link is offered by the crostalk package, i.e. by provided by wrapping <code>data.frame</code>-like objects in a <code>SharedData</code> object.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>library(crosstalk)</pre>
+
+<ul>
+<li>That requires the definition of an id and to put both tables into the same group.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>sd &lt;- crosstalk::SharedData$new(df, ~subcorpus_id, group = &quot;fulltext&quot;)</pre>
+
+<ul>
+<li>To make the selection among speeches, we use a table with the names of the subcorpora, and turn it into a <code>SharedData</code> object. The ids for linking are the names of the subcorpora.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>speeches_table &lt;- data.frame(name = names(speeches))
+dt_cross &lt;- crosstalk::SharedData$new(speeches_table, ~name, group = &quot;fulltext&quot;)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Putting it together (Part III)</h2></hgroup><article  id="putting-it-together-part-iii" class="smaller">
+
+<ul>
+<li>The <code>bscols</code> function (crosstalk package) combines two htmlwidgets in a bootstrap layout.</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>y &lt;- bscols(
+  widths = c(5,NA),
+  DT::datatable(
+    dt_cross,
+    options = list(lengthChange = TRUE, pageLength = 8L, pagingType = &quot;simple&quot;, dom = &quot;tp&quot;),
+    rownames = NULL, width = &quot;100%&quot;, selection = &quot;single&quot;
+  ),
+  fulltext(sd, width = &quot;100%&quot;, box = FALSE)
+)</pre>
+
+<ul>
+<li>The resulting object is a <code>shiny.tag</code> object. In an interactive session, it can be viewed directly in the Viewer pane of RStudio. But including this in an ioslides presentation will provoke a plethora of CSS interferences (see this GitHub issue). Generating plain html from the object, saving it to disk and including this page in an iframe is the solution (see the result on the following slide).</li>
+</ul>
+
+<pre class = 'prettyprint lang-r'>crosstalk_html &lt;- file.path(getwd(), &quot;crosstalk.html&quot;)
+htmltools::save_html(y, file = crosstalk_html, background = &quot;white&quot;,  libdir = &quot;lib&quot;)</pre>
+
+</article></slide><slide class=""><hgroup><h2>Select Fulltext</h2></hgroup><article  id="select-fulltext" class="smaller">
+
+<iframe src="crosstalk.html" frameborder="0" scrolling="no" onload="resizeIframe(this)" padding="0em !important" margin-left="0 !important">
+
+</iframe>
+
+</article></slide><slide class=""><hgroup><h2>Summary &amp; Next Steps</h2></hgroup><article  id="summary-next-steps" class="smaller">
+
+<ul>
+<li><p>These slides convey they best practices that have been identified for including fulltext htmlwidgets in ioslides presentations generated from R Markdown documents. Essentially, the recommendation is:</p>
+
+<ul>
+<li>to wrap a single fulltext htmlwidget in an widgetframe (R pacakge widgetframe), so avoid CSS conflicts.</li>
+<li>to save a <code>shiny.tag</code> object that wraps a set of htmlwidgets connected to each other using crosstalk as an html file to disk and to include this page using an iframe-tag.</li>
+</ul></li>
+<li><p>The scenarios presented here were basic, simple and not necessarily impressive. The beauty of the fulltext htmlwidget is that it can be used to combine the quantitative and the qualitative analysis if text. Highlighting words in the fulltext output simply requires to add something like &ldquo;font style=&lsquo;background-color:yellow&rsquo; to the&rdquo;before&ldquo;-column of the&rdquo;fulltexttable&quot; and the corresponding &ldquo;/font&rdquo; tag to the &ldquo;after&rdquo;-column. So there is a lot you can do to support fancy quantitative text analysis.</p></li>
+<li><p>Enjoy! Feedback welcome! Visit us at GitHub!</p></li>
+</ul></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
