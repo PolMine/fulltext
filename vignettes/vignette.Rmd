@@ -4,10 +4,11 @@ author: "Andreas Blätte (andreas.blaette@uni-due.de)"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{annolite}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{fulltext}
   %\VignetteEncoding{UTF-8}
-
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Purpose
@@ -17,15 +18,15 @@ The ´fulltext´-package includes a lightweight htmlwidget for fulltext output.
 
 ## Getting Started
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 library(janeaustenr)
 library(tokenizers)
-library(annolite)
+library(fulltext)
 ```
 
 ## From tidytext to fulltext
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 emma_txt <- janeaustenr::emma[grep("^CHAPTER\\s+.*?$", janeaustenr::emma)[1]:length(janeaustenr::emma)]
 chapter_beginnings <- grep("^CHAPTER\\s+.*?$", emma_txt)
 chapters <- split(
@@ -52,46 +53,43 @@ reconstruct_paragraphs <- function(x){
 }
 
 chs <- lapply(chapters, reconstruct_paragraphs)
+names(chs) <- sprintf("Chapter_%d", 1:length(chs))
 
 as_paragraphdata <- function(x){
   paras_tok <- tokenizers::tokenize_words(x, lowercase = FALSE, strip_punct = FALSE)
-  df1 <- lapply(
-    1:length(paras_tok),
-    function(i) data.frame(token = paras_tok[[i]], para = i)
+  df_list <- lapply(
+    paras_tok,
+    function(para){
+      df <- data.frame(token = para, tag_before = " ", tag_after = "", stringsAsFactors = FALSE)
+      whitespace <- grep("^[\\.;,:!?\\)\\(]$", df[["token"]], perl = TRUE)
+      if (length(whitespace) > 0L) df[whitespace, "tag_before"] <- ""
+      if (grepl("CHAPTER", df[1,"token"])){
+        df[1,"tag_before"] <- "<h2 style='display:block'>"
+        df[nrow(df), "tag_after"] <- "</h2>"
+      } else {
+        df[1,"tag_before"] <- "<para style='display:block' name=''>"
+        df[nrow(df), "tag_after"] <- "</para>"
+      }
+      df
+    }
   )
-  df2 <- do.call(rbind, df1)
-  df2[["id"]] <- 1L:nrow(df2)
-  para_list <- split(df2, f = df2[["para"]])
-  
-  lapply(
-    para_list,
-    function(x) list(element = "p", tokenstream = x[, c("id", "token")])
-  )
+  do.call(rbind, df_list)
 }
 
-ch1_paragraphs <- as_paragraphdata(chs[[1]])
-ch1_paragraphs[[1]][["element"]] <- "h3"
-ch1_paragraphs <- c(
-  list(list(
-    element = "h2",
-    tokenstream = data.frame(token = c("Jane", "Austen", "-", "Emma"), id = 10001L:10004L)
-    )),
-  ch1_paragraphs
-)
-ch1_fulltextdata <- list(
-  paragraphs = ch1_paragraphs,
-  annotations = data.frame(
-      text = character(),
-      code = character(),
-      annotation = character(),
-      id_left = integer(),
-      id_right = integer()
-  )
-)
+ftxt_list <- lapply(names(chs), function(ch) data.frame(as_paragraphdata(chs[[ch]]), chapter = ch))
 ```
 
-```{r, eval = FALSE}
-fulltext(ch1_fulltextdata, dialog = FALSE, box = TRUE, width = 650)
+```{r, eval = TRUE}
+fulltext(ftxt_list[[1]])
+```
+
+
+```{r, eval = TRUE}
+fulltext(ftxt_list[[2]])
+```
+
+```{r, eval = TRUE}
+fulltext(ftxt_list[[3]])
 ```
 
 
@@ -99,8 +97,7 @@ fulltext(ch1_fulltextdata, dialog = FALSE, box = TRUE, width = 650)
 
 We introduce the fulltext package by example. In addition to the fulltext package, we need the polmineR package which includes the GERMAPARLMINI corpus.
 
-```{r, eval = FALSE}
-library(annolite)
+```{r, eval = TRUE}
 library(polmineR)
 use("polmineR")
 ```
@@ -110,8 +107,10 @@ use("polmineR")
 
 The example aims at outputting one particular speech. We take a speech held by Voker Kauder in the German Bundestag.
 
-```{r, eval = FALSE}
-P <- partition("GERMAPARLMINI", speaker = "Volker Kauder", date = "2009-11-10")
+```{r, eval = TRUE}
+sp <- corpus("GERMAPARLMINI") %>%
+  subset(speaker == "Volker Kauder") %>%
+  subset(date == "2009-11-10")
 ```
 
 
@@ -119,8 +118,8 @@ P <- partition("GERMAPARLMINI", speaker = "Volker Kauder", date = "2009-11-10")
 
 The data that is passed to the JavaScript that generates the output. Expected to be a list of lists that provide data on sections of text. Each of the sub-lists is to be a named list of a character vector with the HTML element the section will be wrapped into, and  a `data.frame` (or a list) with a column "token", and a column "id".
 
-```{r, eval = FALSE}
-D <- as.fulltextdata(P, headline = "Volker Kauder (CDU)")
+```{r, eval = TRUE}
+ftab <- as.fulltexttable(sp, headline = "Volker Kauder (CDU)", display = "block")
 ```
 
 
@@ -129,8 +128,8 @@ D <- as.fulltextdata(P, headline = "Volker Kauder (CDU)")
 
 ## Getting the output
 
-```{r, eval = FALSE}
-fulltext(D, dialog = FALSE, box = TRUE, width = 650)
+```{r, eval = TRUE}
+fulltext(ftab, box = TRUE)
 ```
 
 ## Perspectives

@@ -1,3 +1,9 @@
+fulltext 0.0.0.9004
+===================
+
+* The vignette works, again.
+
+
 fulltext 0.0.0.9003
 ===================
 
