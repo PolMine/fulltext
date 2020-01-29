@@ -1,3 +1,8 @@
+fulltext 0.0.0.9003
+===================
+
+* Added a template for an ioslides presentation that includes fulltext htmlwidgets. 
+
 fulltext 0.0.0.9002
 ===================
 
@@ -6,6 +11,7 @@ fulltext 0.0.0.9002
 * The method `as.fulltexttable` has a new argument `display` to indicate whether the text should be visible ("none") or not ("block").
 * Introduced a new tag para in the css to avoid that css for p overrides ioslides layout.
 * commented out background color white.
+* 
 
 fulltext 0.0.0.9001
 ===================

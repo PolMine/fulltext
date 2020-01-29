@@ -1,6 +1,7 @@
 #' Convert object to input for fulltext (table format).
 #' 
 #' @param x The object to be converted.
+#' @param ... Placeholder for further arguments defined by methods.
 #' @export as.fulltexttable
 #' @rdname as.fulltexttable
 setGeneric("as.fulltexttable", function(x, ...) standardGeneric("as.fulltexttable"))
@@ -9,6 +10,8 @@ setGeneric("as.fulltexttable", function(x, ...) standardGeneric("as.fulltexttabl
 
 #' @param headline A headline to prepend.
 #' @param name An id inserted into tags.
+#' @param display The initial value of the html style argument. Either "block"
+#'   or "none". Should usually be "block"
 #' @examples
 #' library(polmineR)
 #' library(fulltext)
@@ -23,6 +26,7 @@ setGeneric("as.fulltexttable", function(x, ...) standardGeneric("as.fulltexttabl
 #' @importFrom RcppCWB cl_struc2str cl_cpos2struc
 #' @importFrom methods is
 #' @importClassesFrom polmineR slice subcorpus partition
+#' @rdname as.fulltexttable
 setMethod("as.fulltexttable", "slice", function(x, display = c("none", "block"), headline = NULL, name = ""){
   if (!"slice" %in% is(x))stop("The function is implemented only for partition/subcorpus objects.")
   paragraphs <- lapply(
