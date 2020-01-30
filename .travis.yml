@@ -1,0 +1,34 @@
+language: r
+cache: packages
+
+r_packages:
+  - devtools
+  - plyr
+  - tm
+  - tidytext
+  - covr
+  - rmarkdown
+  - htmlwidgets
+  - polmineR
+  - RcppCWB
+  - methods
+  - crosstalk
+  - knitr
+  - janeaustenr
+  - tokenizers
+  - data.table
+  - DT
+  - magrittr
+
+r_github_packages:
+  - r-lib/covr
+
+warnings_are_errors: true
+
+notifications:
+  email:
+  on_success: change
+  on_failure: change
+
+after_success:
+  - Rscript -e 'covr::codecov(type = "all", token = "36cf23e7-4231-4329-b680-f052fece17dc")'

@@ -26,6 +26,8 @@ Collate:
     'fulltexttable.R'
     'as.fulltexttable.R'
     'fulltext.R'
+    'highlight.R'
     'rename.R'
     'retag.R'
+    'tooltips.R'
 RoxygenNote: 6.1.1

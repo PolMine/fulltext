@@ -13,7 +13,7 @@
 \usage{
 as.fulltexttable(x, ...)
 
-\S4method{as.fulltexttable}{slice}(x, display = c("none", "block"),
+\S4method{as.fulltexttable}{slice}(x, display = "block",
   headline = NULL, name = "")
 
 \S4method{as.fulltexttable}{data.frame}(x, ...)

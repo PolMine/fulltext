@@ -30,7 +30,7 @@ setGeneric("as.fulltexttable", function(x, ...) standardGeneric("as.fulltexttabl
 #' @importFrom methods is
 #' @importClassesFrom polmineR slice subcorpus partition
 #' @rdname as.fulltexttable
-setMethod("as.fulltexttable", "slice", function(x, display = c("none", "block"), headline = NULL, name = ""){
+setMethod("as.fulltexttable", "slice", function(x, display = "block", headline = NULL, name = ""){
   if (!"slice" %in% is(x))stop("The function is implemented only for partition/subcorpus objects.")
   paragraphs <- lapply(
     seq_len(nrow(x@cpos)),
