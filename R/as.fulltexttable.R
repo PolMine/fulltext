@@ -1,3 +1,6 @@
+#' @include fulltexttable.R
+NULL
+
 #' Convert object to input for fulltext (table format).
 #' 
 #' @param x The object to be converted.
@@ -63,6 +66,48 @@ setMethod("as.fulltexttable", "slice", function(x, display = c("none", "block"),
     headline_df[nrow(headline_df), "tag_after"] <- "</h2>"
     y <- rbind(headline_df, y)
   }
+  class(y) <- c("fulltexttable", class(y))
   y
 })
 
+#' @export
+#' @rdname as.fulltexttable
+setMethod("as.fulltexttable", "data.frame", function(x, ...){
+  class(x) <- c("fulltexttable", class(x))
+  x
+})
+
+
+#' @param beautify Remove whitespace before interpunctation.
+#' @param tag A tag.
+#' @rdname as.fulltexttable
+setMethod("as.fulltexttable", "character", function(x, display = "block", tag = "para", name = "", beautify = TRUE){
+  if (length(x) == 0L) return(NULL)
+  df <- data.frame(token = x, tag_before = " ", tag_after = "", stringsAsFactors = FALSE)
+  if (beautify){
+    whitespace <- grep("^[\\.;,:!?\\)\\(]$", df[["token"]], perl = TRUE)
+    if (length(whitespace) > 0L) df[whitespace, "tag_before"] <- ""
+  }
+  df[1,"tag_before"] <- sprintf("<%s style='display:block' name='%s'>", tag, name)
+  df[nrow(df), "tag_after"] <- sprintf("</%s>", tag)
+  class(df) <- c("fulltexttable", class(df))
+  df
+})
+
+#' @rdname as.fulltexttable
+setMethod("as.fulltexttable", "list", function(x, display = "block", tag = "para", beautify = TRUE){
+  li <- lapply(x, as.fulltexttable, display = display, tag = tag, beautify = beautify)
+  y <- do.call(rbind, li)
+  class(y) <- c("fulltexttable", class(y))
+  y
+})
+
+#' @rdname as.fulltexttable
+setMethod("as.fulltexttable", "fulltexttable", function(x, ...) x)
+
+#' @rdname as.fulltexttable
+setMethod("as.fulltexttable", "data.table", function(x){
+  y <- as.data.frame(x)
+  class(y) <- c("fulltexttable", class(y))
+  y
+})

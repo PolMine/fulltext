@@ -4,12 +4,29 @@
 \name{as.fulltexttable}
 \alias{as.fulltexttable}
 \alias{as.fulltexttable,slice-method}
+\alias{as.fulltexttable,data.frame-method}
+\alias{as.fulltexttable,character-method}
+\alias{as.fulltexttable,list-method}
+\alias{as.fulltexttable,fulltexttable-method}
+\alias{as.fulltexttable,data.table-method}
 \title{Convert object to input for fulltext (table format).}
 \usage{
 as.fulltexttable(x, ...)
 
 \S4method{as.fulltexttable}{slice}(x, display = c("none", "block"),
   headline = NULL, name = "")
+
+\S4method{as.fulltexttable}{data.frame}(x, ...)
+
+\S4method{as.fulltexttable}{character}(x, display = "block",
+  tag = "para", name = "", beautify = TRUE)
+
+\S4method{as.fulltexttable}{list}(x, display = "block", tag = "para",
+  beautify = TRUE)
+
+\S4method{as.fulltexttable}{fulltexttable}(x, ...)
+
+\S4method{as.fulltexttable}{data.table}(x)
 }
 \arguments{
 \item{x}{The object to be converted.}
@@ -22,6 +39,10 @@ or "none". Should usually be "block"}
 \item{headline}{A headline to prepend.}
 
 \item{name}{An id inserted into tags.}
+
+\item{tag}{A tag.}
+
+\item{beautify}{Remove whitespace before interpunctation.}
 }
 \description{
 Convert object to input for fulltext (table format).

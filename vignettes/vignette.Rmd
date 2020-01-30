@@ -13,8 +13,8 @@ editor_options:
 
 ## Purpose
 
-The ´fulltext´-package includes a lightweight htmlwidget for fulltext output.
 
+The ´fulltext´-package includes a lightweight htmlwidget for fulltext output.
 
 ## Getting Started
 
@@ -22,78 +22,33 @@ The ´fulltext´-package includes a lightweight htmlwidget for fulltext output.
 library(janeaustenr)
 library(tokenizers)
 library(fulltext)
+library(polmineR)
+library(magrittr)
+library(data.table)
 ```
 
 ## From tidytext to fulltext
 
 ```{r, eval = TRUE}
-emma_txt <- janeaustenr::emma[grep("^CHAPTER\\s+.*?$", janeaustenr::emma)[1]:length(janeaustenr::emma)]
-chapter_beginnings <- grep("^CHAPTER\\s+.*?$", emma_txt)
-chapters <- split(
-  emma_txt,
-  cut(
-    1L:length(emma_txt),
-    c(chapter_beginnings, length(emma_txt)),
-    include.lowest = TRUE, right = FALSE
-  )
-)
-
-reconstruct_paragraphs <- function(x){
-  paras <- split(
-    x, 
-    cut(
-      1L:length(x),
-      unique(c(1L, grep("^\\s*$", x), length(x))),
-      include.lowest = TRUE, right = FALSE
-    )
-  )
-  paras <- lapply(paras, function(x) x[x != ""])
-  for (i in rev(which(lapply(paras, length) == 0))) paras[[i]] <- NULL
-  sapply(paras, function(p) paste(p, collapse = " "))
-}
-
-chs <- lapply(chapters, reconstruct_paragraphs)
-names(chs) <- sprintf("Chapter_%d", 1:length(chs))
-
-as_paragraphdata <- function(x){
-  paras_tok <- tokenizers::tokenize_words(x, lowercase = FALSE, strip_punct = FALSE)
-  df_list <- lapply(
-    paras_tok,
-    function(para){
-      df <- data.frame(token = para, tag_before = " ", tag_after = "", stringsAsFactors = FALSE)
-      whitespace <- grep("^[\\.;,:!?\\)\\(]$", df[["token"]], perl = TRUE)
-      if (length(whitespace) > 0L) df[whitespace, "tag_before"] <- ""
-      if (grepl("CHAPTER", df[1,"token"])){
-        df[1,"tag_before"] <- "<h2 style='display:block'>"
-        df[nrow(df), "tag_after"] <- "</h2>"
-      } else {
-        df[1,"tag_before"] <- "<para style='display:block' name=''>"
-        df[nrow(df), "tag_after"] <- "</para>"
-      }
-      df
-    }
-  )
-  do.call(rbind, df_list)
-}
-
-ftxt_list <- lapply(names(chs), function(ch) data.frame(as_paragraphdata(chs[[ch]]), chapter = ch))
+ftxt_list <- cut(1:length(emma), c(1, grep("^\\s*$", emma), length(emma))) %>%
+  split(janeaustenr::emma, f = .) %>%
+  lapply(paste, collapse = " ") %>%
+  tokenizers::tokenize_words(lowercase = FALSE, strip_punct = FALSE) %>%
+  as.fulltexttable() %>% 
+  split(ftxt, column = "tag_before", regex = "<para") %>%
+  retag(regex = "CHAPTER", old = "para", new = "h2") %>%
+  as.fulltexttable() %>%
+  split(column = "token", regex = "CHAPTER") %>%
+  rename(name = sprintf("Chapter %d", seq_along(.)))
 ```
+
 
 ```{r, eval = TRUE}
 fulltext(ftxt_list[[1]])
 ```
 
 
-```{r, eval = TRUE}
-fulltext(ftxt_list[[2]])
-```
-
-```{r, eval = TRUE}
-fulltext(ftxt_list[[3]])
-```
-
-
-## Initialization
+## From a subcorpus to fulltext
 
 We introduce the fulltext package by example. In addition to the fulltext package, we need the polmineR package which includes the GERMAPARLMINI corpus.
 
@@ -101,9 +56,6 @@ We introduce the fulltext package by example. In addition to the fulltext packag
 library(polmineR)
 use("polmineR")
 ```
-
-
-## The speech to reconstruct
 
 The example aims at outputting one particular speech. We take a speech held by Voker Kauder in the German Bundestag.
 
@@ -113,23 +65,56 @@ sp <- corpus("GERMAPARLMINI") %>%
   subset(date == "2009-11-10")
 ```
 
-
-## Input data for the widget
-
 The data that is passed to the JavaScript that generates the output. Expected to be a list of lists that provide data on sections of text. Each of the sub-lists is to be a named list of a character vector with the HTML element the section will be wrapped into, and  a `data.frame` (or a list) with a column "token", and a column "id".
 
 ```{r, eval = TRUE}
 ftab <- as.fulltexttable(sp, headline = "Volker Kauder (CDU)", display = "block")
 ```
 
-
-## Adding a headline
-
-
-## Getting the output
+So let us see the result ... 
 
 ```{r, eval = TRUE}
 fulltext(ftab, box = TRUE)
+```
+
+
+## Crosstalking
+
+### Preparations
+
+```{r}
+ftxt_list <- lapply(
+  setNames(names(ftxt_list), names(ftxt_list)),
+  function(chapter) data.frame(ftxt_list[[chapter]], chapter = chapter)
+)
+```
+
+
+
+```{r}
+library(crosstalk)
+austen_chapters <- do.call(rbind, ftxt_list)
+austen_chapters[["tag_before"]] <- gsub("display:block", "display:none", austen_chapters[["tag_before"]])
+sd <- crosstalk::SharedData$new(austen_chapters, ~chapter, group = "fulltext")
+chapters_table <- data.frame(chapter = unique(austen_chapters$chapter))
+chapters_table_sd <- crosstalk::SharedData$new(chapters_table, ~chapter, group = "fulltext")
+
+y <- bscols(
+  # widths = c(NA,NA),
+  DT::datatable(
+    chapters_table_sd,
+    options = list(lengthChange = TRUE, pageLength = 8L, pagingType = "simple", dom = "tp"),
+    rownames = NULL, width = "100%", selection = "single"
+  ),
+  fulltext(sd, width = "100%", box = TRUE)
+)
+
+```
+
+So this is the result.
+
+```{r}
+y
 ```
 
 ## Perspectives

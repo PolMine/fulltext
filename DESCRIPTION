@@ -7,19 +7,25 @@ Authors@R: person("Andreas", "Blaette", role = c("aut", "cre"), email = "andreas
 Description: The package includes an htmlwidget 'fulltext' and corresponding auxiliary functions.
 Imports:
     htmlwidgets,
-    polmineR,
+    polmineR (>= 0.8.0.9006),
     RcppCWB,
     methods,
     crosstalk
 Suggests:
     knitr,
     janeaustenr,
-    tokenizers
+    tokenizers,
+    data.table,
+    DT,
+    magrittr
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL-3
 Encoding: UTF-8
 Collate:
-    'fulltext.R'
+    'fulltexttable.R'
     'as.fulltexttable.R'
+    'fulltext.R'
+    'rename.R'
+    'retag.R'
 RoxygenNote: 6.1.1
