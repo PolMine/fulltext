@@ -8,3 +8,7 @@ Status](https://api.travis-ci.org/PolMine/fulltext.svg?branch=master)](https://t
 The purpose of the ´fulltext´-package is to offer a htmlwidget to
 reconstruct a formatted fulltext output from input data of tokenized
 text.
+
+<iframe src="fulltext.html">
+
+</iframe>

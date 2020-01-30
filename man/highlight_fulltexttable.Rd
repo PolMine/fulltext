@@ -15,3 +15,15 @@
 \description{
 Highlight tokens in fulltexttable
 }
+\examples{
+library(polmineR)
+library(fulltext)
+use("polmineR")
+kau <- corpus("GERMAPARLMINI") \%>\%
+  subset(speaker == "Volker Kauder") \%>\%
+  subset(date == "2009-11-10")
+f <- as.fulltexttable(kau, headline = "Volker Kauder (CDU)", display = "block")
+f <- highlight(f, yellow = "Opposition")
+
+fulltext(f, box = FALSE)
+}
