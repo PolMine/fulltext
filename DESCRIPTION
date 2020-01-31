@@ -17,7 +17,9 @@ Suggests:
     tokenizers,
     data.table,
     DT,
-    magrittr
+    magrittr,
+    rmarkdown,
+    webshot
 VignetteBuilder: knitr
 LazyData: yes
 License: GPL-3
