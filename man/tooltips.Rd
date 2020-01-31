@@ -14,6 +14,7 @@
 Add tooltips to fulltexttable
 }
 \examples{
+\dontrun{
 library(polmineR)
 library(fulltext)
 use("polmineR")
@@ -25,4 +26,5 @@ k <- corpus("GERMAPARLMINI") \%>\%
   
 k <- tooltips(k, Opposition = "Dauerlooser", Regierung = "Vollchecker", Regierungserklärung = "Gewinnerprogramm")
 fulltext(k, box = FALSE)
+}
 }
