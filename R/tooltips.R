@@ -19,8 +19,9 @@ NULL
 #' k <- tooltips(k, Opposition = "Dauerlooser", Regierung = "Vollchecker", Regierungserklärung = "Gewinnerprogramm")
 #' fulltext(k, box = FALSE)
 #' @rdname tooltips
-setMethod("tooltips", "fulltexttable", function(.Object, ...){
+setMethod("tooltips", "fulltexttable", function(.Object, tooltips = list(), ...){
   ttips <- list(...)
+  ttips <- c(ttips, as.list(tooltips))
   for (x in names(ttips)){
     i <- which(.Object[["token"]] == x)
     .Object[i,"tag_before"] <- sprintf('%s<span class="tooltip">', .Object[i,"tag_before"])

@@ -9,6 +9,7 @@ NULL
 #' @export highlight
 #' @rdname highlight_fulltexttable
 #' @examples
+#' \dontrun{
 #' library(polmineR)
 #' library(fulltext)
 #' use("polmineR")
@@ -19,6 +20,7 @@ NULL
 #' f <- highlight(f, yellow = "Opposition")
 #' 
 #' fulltext(f, box = FALSE)
+#' }
 setMethod("highlight", "fulltexttable", function(.Object, ...){
   scheme <- list(...)
   for (color in names(scheme)){

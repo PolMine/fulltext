@@ -5,7 +5,7 @@
 \alias{tooltips,fulltexttable-method}
 \title{Add tooltips to fulltexttable}
 \usage{
-\S4method{tooltips}{fulltexttable}(.Object, tooltips, ...)
+\S4method{tooltips}{fulltexttable}(.Object, tooltips = list(), ...)
 }
 \arguments{
 \item{.Object}{A \code{fulltexttable} object.}
@@ -23,6 +23,6 @@ k <- corpus("GERMAPARLMINI") \%>\%
   subset(date == "2009-11-10") \%>\%
   as.fulltexttable(headline = "Volker Kauder (CDU)", display = "block")
   
-k <- tooltips(ftab, yellow = "asdf")
-fulltext(ftab, box = FALSE)
+k <- tooltips(k, Opposition = "Dauerlooser", Regierung = "Vollchecker", Regierungserklärung = "Gewinnerprogramm")
+fulltext(k, box = FALSE)
 }

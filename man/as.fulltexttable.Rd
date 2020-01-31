@@ -14,7 +14,7 @@
 as.fulltexttable(x, ...)
 
 \S4method{as.fulltexttable}{slice}(x, display = "block",
-  headline = NULL, name = "")
+  headline = NULL, name = "", interjections = TRUE)
 
 \S4method{as.fulltexttable}{data.frame}(x, ...)
 

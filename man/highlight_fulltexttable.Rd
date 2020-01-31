@@ -16,6 +16,7 @@
 Highlight tokens in fulltexttable
 }
 \examples{
+\dontrun{
 library(polmineR)
 library(fulltext)
 use("polmineR")
@@ -26,4 +27,5 @@ f <- as.fulltexttable(kau, headline = "Volker Kauder (CDU)", display = "block")
 f <- highlight(f, yellow = "Opposition")
 
 fulltext(f, box = FALSE)
+}
 }

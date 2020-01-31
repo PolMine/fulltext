@@ -2,6 +2,7 @@ fulltext 0.0.0.9004
 ===================
 
 * The vignette works, again.
+* Added tooltips argument to `tooltips()`-method
 
 
 fulltext 0.0.0.9003
