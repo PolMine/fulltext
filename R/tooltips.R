@@ -21,7 +21,12 @@ NULL
 #'   subset(date == "2009-11-10") %>%
 #'   as.fulltexttable(headline = "Volker Kauder (CDU)", display = "block")
 #'   
-#' k <- tooltips(k, Opposition = "Dauerlooser", Regierung = "Vollchecker", Regierungserklärung = "Gewinnerprogramm")
+#' k <- tooltips(
+#'   k,
+#'   Opposition = "Dauerlooser",
+#'   Regierung = "Vollchecker",
+#'   Regierungserklärung = "Gewinnerprogramm"
+#' )
 #' fulltext(k, box = FALSE)
 #' }
 #' @rdname tooltips

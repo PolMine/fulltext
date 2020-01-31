@@ -6,12 +6,11 @@ addons:
     packages:
     - libxml2-dev
     - default-jdk
-    - libprotobuf-dev
-    - protobuf-compiler
 
 before_install:
-  - Rscript -e 'install.packages("devtools")'
   - Rscript -e 'install.packages("RcppCWB")'
+  - Rscript -e 'install.packages("devtools")'
+  - Rscript -e 'install.packages("webshot")'
   - Rscript -e 'devtools::install_github("PolMine/polmineR", ref = "dev")'
 
 
