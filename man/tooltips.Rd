@@ -9,6 +9,12 @@
 }
 \arguments{
 \item{.Object}{A \code{fulltexttable} object.}
+
+\item{tooltips}{A named list or character vector with the tooltips to be
+displayed. The names of the list/vector are expected to be tokens.}
+
+\item{...}{What comes in via the three dots will be turned into a list and
+merged with the tooltips argument.}
 }
 \description{
 Add tooltips to fulltexttable

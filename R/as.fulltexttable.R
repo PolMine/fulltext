@@ -13,6 +13,9 @@ setGeneric("as.fulltexttable", function(x, ...) standardGeneric("as.fulltexttabl
 
 #' @param headline A headline to prepend.
 #' @param name An id inserted into tags.
+#' @param interjections If \code{TRUE}, an s-attribute "interjections" will be assumed to
+#'   be available. When the s-attribute "interjections" is either "TRUE" or not "speech", 
+#'   the passage of text is blockquoted.
 #' @param display The initial value of the html style argument. Either "block"
 #'   or "none". Should usually be "block"
 #' @examples

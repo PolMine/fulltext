@@ -87,6 +87,7 @@ ftxt_list <- lapply(
   setNames(names(ftxt_list), names(ftxt_list)),
   function(chapter) data.frame(ftxt_list[[chapter]], chapter = chapter)
 )
+ftxt_list <- ftxt_list[1:5]
 ```
 
 

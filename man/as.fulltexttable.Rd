@@ -40,6 +40,10 @@ or "none". Should usually be "block"}
 
 \item{name}{An id inserted into tags.}
 
+\item{interjections}{If \code{TRUE}, an s-attribute "interjections" will be assumed to
+be available. When the s-attribute "interjections" is either "TRUE" or not "speech", 
+the passage of text is blockquoted.}
+
 \item{tag}{A tag.}
 
 \item{beautify}{Remove whitespace before interpunctation.}
