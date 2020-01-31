@@ -7,6 +7,7 @@ NULL
 #' @param .Object A \code{fulltexttable} object.
 #' @importMethodsFrom polmineR tooltips
 #' @examples
+#' \dontrun{
 #' library(polmineR)
 #' library(fulltext)
 #' use("polmineR")
@@ -18,6 +19,7 @@ NULL
 #'   
 #' k <- tooltips(k, Opposition = "Dauerlooser", Regierung = "Vollchecker", Regierungserklärung = "Gewinnerprogramm")
 #' fulltext(k, box = FALSE)
+#' }
 #' @rdname tooltips
 setMethod("tooltips", "fulltexttable", function(.Object, tooltips = list(), ...){
   ttips <- list(...)
