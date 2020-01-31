@@ -30,7 +30,7 @@ setGeneric("as.fulltexttable", function(x, ...) standardGeneric("as.fulltexttabl
 #' @importFrom methods is
 #' @importClassesFrom polmineR slice subcorpus partition
 #' @rdname as.fulltexttable
-setMethod("as.fulltexttable", "slice", function(x, display = "block", headline = NULL, name = ""){
+setMethod("as.fulltexttable", "slice", function(x, display = "block", headline = NULL, name = "", interjections = TRUE){
   if (!"slice" %in% is(x))stop("The function is implemented only for partition/subcorpus objects.")
   paragraphs <- lapply(
     seq_len(nrow(x@cpos)),
@@ -47,13 +47,18 @@ setMethod("as.fulltexttable", "slice", function(x, display = "block", headline =
       if (length(whitespace) > 0L) df[whitespace, "tag_before"] <- ""
       df[1,"tag_before"] <- ""
       
-      s_attr <- RcppCWB::cl_struc2str(RcppCWB::cl_cpos2struc(x@cpos[i,1], corpus = x@corpus, s_attribute = "interjection"), corpus = x@corpus, s_attribute ="interjection")
-      if (s_attr %in% c("speech", "FALSE")){
+      if (interjections){
+        s_attr <- RcppCWB::cl_struc2str(RcppCWB::cl_cpos2struc(x@cpos[i,1], corpus = x@corpus, s_attribute = "interjection"), corpus = x@corpus, s_attribute ="interjection")
+        if (s_attr %in% c("speech", "FALSE")){
+          df[1,"tag_before"] <- paste(df[1,"tag_before"], sprintf("<para style='display:%s' name='%s'>", display, name), sep = "")
+          df[nrow(df), "tag_after"] <- paste(df[nrow(df), "tag_after"], "</para>", sep = "")
+        } else {
+          df[1,"tag_before"] <- paste(df[1,"tag_before"], sprintf("<blockquote style='display:%s' name ='%s'>", display, name), sep = "")
+          df[nrow(df), "tag_after"] <- paste(df[nrow(df), "tag_after"], "</blockquote>", sep = "")
+        }
+      } else {
         df[1,"tag_before"] <- paste(df[1,"tag_before"], sprintf("<para style='display:%s' name='%s'>", display, name), sep = "")
         df[nrow(df), "tag_after"] <- paste(df[nrow(df), "tag_after"], "</para>", sep = "")
-      } else {
-        df[1,"tag_before"] <- paste(df[1,"tag_before"], sprintf("<blockquote style='display:%s' name ='%s'>", display, name), sep = "")
-        df[nrow(df), "tag_after"] <- paste(df[nrow(df), "tag_after"], "</blockquote>", sep = "")
       }
       df
     }

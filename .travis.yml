@@ -1,6 +1,20 @@
 language: r
 cache: packages
 
+addons:
+  apt:
+    packages:
+    - libxml2-dev
+    - default-jdk
+    - libprotobuf-dev
+    - protobuf-compiler
+
+before_install:
+  - Rscript -e 'install.packages("devtools")'
+  - Rscript -e 'install.packages("RcppCWB")'
+  - Rscript -e 'devtools::install_github("PolMine/polmineR")'
+
+
 r_packages:
   - devtools
   - plyr
@@ -9,7 +23,6 @@ r_packages:
   - covr
   - rmarkdown
   - htmlwidgets
-  - polmineR
   - RcppCWB
   - methods
   - crosstalk
