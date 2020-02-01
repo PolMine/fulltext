@@ -8,7 +8,8 @@ init:
         Import-Module '..\appveyor-tool.ps1'
 
 install:
-  ps: Bootstrap
+  - Rscript -e 'install.packages("polmineR", repos = "https://polmine.github.io/drat")'
+  - ps: Bootstrap
 
 cache:
   - C:\RLibrary
