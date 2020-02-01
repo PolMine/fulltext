@@ -43,4 +43,4 @@ notifications:
   on_failure: change
 
 after_success:
-  - Rscript -e 'covr::codecov(type = "all", token = "36cf23e7-4231-4329-b680-f052fece17dc")'
+  - Rscript -e 'covr::codecov(type = "all", token = "28dc4a14-eea3-4e5f-b43c-8ea3ab97f85c")'
