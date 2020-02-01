@@ -9,10 +9,9 @@ addons:
 
 before_install:
   - Rscript -e 'install.packages("RcppCWB")'
-  - Rscript -e 'install.packages("devtools")'
   - Rscript -e 'install.packages("webshot")'
   - Rscript -e 'install.packages("rmarkdown")'
-  - Rscript -e 'devtools::install_github("PolMine/polmineR", ref = "dev")'
+  - Rscript -e 'install.packages("polmineR", repos = "https://polmine.github.io/drat")'
 
 
 r_packages:
