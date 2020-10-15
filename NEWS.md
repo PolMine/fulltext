@@ -1,3 +1,8 @@
+fulltext 0.0.0.9005
+===================
+
+* method `highlight()` accepts argument `annotations`
+
 fulltext 0.0.0.9004
 ===================
 
